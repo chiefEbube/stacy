@@ -1,11 +1,15 @@
+import { SplashOverlay } from '@/components/SplashOverlay';
+import { useAppReady } from '@/hooks/use-app-ready';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useCallback, useState } from 'react';
+import { View } from 'react-native';
 import 'react-native-reanimated';
 
-import { ThemeProvider, useAppTheme } from '@/providers/ThemeProvider';
+import { useAppTheme } from '@/providers/ThemeProvider';
+import { AppProviders } from '@/providers/AppProviders';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -13,10 +17,15 @@ SplashScreen.preventAutoHideAsync();
 
 function RootNavigator() {
   const { theme, isDark } = useAppTheme();
+  const { ready, splashExiting } = useAppReady();
+  const [nativeSplashHidden, setNativeSplashHidden] = useState(false);
 
-  useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
+  const onShellLayout = useCallback(() => {
+    if (!nativeSplashHidden) {
+      setNativeSplashHidden(true);
+      SplashScreen.hideAsync();
+    }
+  }, [nativeSplashHidden]);
 
   const nativeNavigationTheme = {
     ...(isDark ? DarkTheme : DefaultTheme),
@@ -32,19 +41,24 @@ function RootNavigator() {
   };
 
   return (
-    <NavigationThemeProvider value={nativeNavigationTheme}>
-      <StatusBar style={isDark ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-        <Stack.Screen name="index" />
-      </Stack>
-    </NavigationThemeProvider>
+    <View style={{ flex: 1 }} onLayout={onShellLayout}>
+      <NavigationThemeProvider value={nativeNavigationTheme}>
+        <StatusBar style={isDark ? 'light' : 'dark'} />
+        <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(app)" />
+        </Stack>
+      </NavigationThemeProvider>
+      {!ready && <SplashOverlay exiting={splashExiting} />}
+    </View>
   );
 }
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
+    <AppProviders>
       <RootNavigator />
-    </ThemeProvider>
+    </AppProviders>
   );
 }
