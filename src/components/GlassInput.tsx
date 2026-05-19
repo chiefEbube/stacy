@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   inputShellPill: {
-    borderRadius: 999,
+    borderRadius: 10,
     paddingHorizontal: 20,
   },
   input: {

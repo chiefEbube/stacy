@@ -2,7 +2,7 @@ import { useBlurTarget } from '@/contexts/blur-target-context';
 import { useAppTheme } from '@/providers/ThemeProvider';
 import { BlurView } from 'expo-blur';
 import React from 'react';
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, View, ViewStyle } from 'react-native';
 
 export const AUTH_SHEET_HEIGHT_RATIO = 0.75;
 
@@ -13,6 +13,7 @@ interface AuthBottomSheetProps {
 }
 
 export const AuthBottomSheet = ({ children, height, style }: AuthBottomSheetProps) => {
+  const { width: screenWidth } = useWindowDimensions();
   const { theme, isDark } = useAppTheme();
   const blurTarget = useBlurTarget();
   const androidBlurMethod =
@@ -24,6 +25,7 @@ export const AuthBottomSheet = ({ children, height, style }: AuthBottomSheetProp
         styles.sheet,
         {
           height,
+          width: screenWidth,
           borderColor: theme.glassBorder,
           shadowColor: theme.shadow,
         },
@@ -61,9 +63,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+    marginHorizontal: 0,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    borderWidth: 1,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
     borderBottomWidth: 0,
     overflow: 'hidden',
     shadowOffset: { width: 0, height: -8 },
@@ -77,8 +84,8 @@ const styles = StyleSheet.create({
   topHighlight: {
     position: 'absolute',
     top: 0,
-    left: 24,
-    right: 24,
+    left: 0,
+    right: 0,
     height: 1,
     borderTopWidth: 1,
   },

@@ -44,7 +44,7 @@ export const AuthScreenLayout = ({
           <Text style={[styles.brand, { color: theme.textMuted }]}>STACY</Text>
         </View>
 
-        <AuthBottomSheet height={sheetHeight}>
+        <AuthBottomSheet height={sheetHeight} style={styles.sheetFullBleed}>
           <SafeAreaView style={styles.sheetSafe} edges={['bottom']}>
             <KeyboardAvoidingView
               style={styles.flex}
@@ -78,9 +78,12 @@ export const AuthScreenLayout = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
   },
   root: {
     flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
   },
   hero: {
     alignItems: 'center',
@@ -105,8 +108,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 5,
   },
+  sheetFullBleed: {
+    left: 0,
+    right: 0,
+    width: '100%',
+    marginHorizontal: 0,
+  },
   sheetSafe: {
     flex: 1,
+    width: '100%',
   },
   flex: {
     flex: 1,

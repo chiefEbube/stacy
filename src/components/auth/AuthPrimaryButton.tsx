@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.99 }],
   },
   gradient: {
-    borderRadius: 999,
+    borderRadius: 10,
     paddingVertical: 17,
     paddingHorizontal: 24,
     alignItems: 'center',
