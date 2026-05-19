@@ -1,4 +1,4 @@
-import { GlassCard } from '@/components/GlassCard';
+import { AUTH_SHEET_HEIGHT_RATIO, AuthBottomSheet } from '@/components/auth/AuthBottomSheet';
 import { GradientBackground } from '@/components/GradientBackground';
 import { useAppTheme } from '@/providers/ThemeProvider';
 import { Image } from 'expo-image';
@@ -9,9 +9,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const logoSource = require('@/assets/images/stacy-logo-new.png');
 
@@ -29,32 +30,47 @@ export const AuthScreenLayout = ({
   footer,
 }: AuthScreenLayoutProps) => {
   const { theme } = useAppTheme();
+  const { height: screenHeight } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const sheetHeight = screenHeight * AUTH_SHEET_HEIGHT_RATIO;
+  const heroHeight = screenHeight - sheetHeight;
 
   return (
     <GradientBackground style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.header}>
-              <Image source={logoSource} style={styles.logo} contentFit="contain" />
-              <Text style={[styles.brand, { color: theme.text }]}>STACY</Text>
-              <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
-              <Text style={[styles.subtitle, { color: theme.textMuted }]}>{subtitle}</Text>
-            </View>
+      <View style={styles.root}>
+        <View style={[styles.hero, { height: heroHeight, paddingTop: insets.top }]}>
+          <View style={[styles.heroGlow, { backgroundColor: theme.primary }]} />
+          <Image source={logoSource} style={styles.logo} contentFit="contain" />
+          <Text style={[styles.brand, { color: theme.textMuted }]}>STACY</Text>
+        </View>
 
-            <GlassCard style={styles.card}>{children}</GlassCard>
+        <AuthBottomSheet height={sheetHeight}>
+          <SafeAreaView style={styles.sheetSafe} edges={['bottom']}>
+            <KeyboardAvoidingView
+              style={styles.flex}
+              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+              keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
+            >
+              <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+              >
+                <View style={styles.sheetHeader}>
+                  <View style={[styles.handle, { backgroundColor: theme.glassBorder }]} />
+                  <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
+                  <Text style={[styles.subtitle, { color: theme.textMuted }]}>{subtitle}</Text>
+                </View>
 
-            {footer ? <View style={styles.footer}>{footer}</View> : null}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+                <View style={styles.form}>{children}</View>
+
+                {footer ? <View style={styles.footer}>{footer}</View> : null}
+              </ScrollView>
+            </KeyboardAvoidingView>
+          </SafeAreaView>
+        </AuthBottomSheet>
+      </View>
     </GradientBackground>
   );
 };
@@ -63,51 +79,71 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  safeArea: {
+  root: {
+    flex: 1,
+  },
+  hero: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+  heroGlow: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    opacity: 0.2,
+    top: '30%',
+  },
+  logo: {
+    width: 96,
+    height: 96,
+    marginBottom: 12,
+  },
+  brand: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 5,
+  },
+  sheetSafe: {
     flex: 1,
   },
   flex: {
     flex: 1,
   },
-  scroll: {
+  scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingBottom: 32,
-    justifyContent: 'center',
+    paddingTop: 8,
+    paddingBottom: 16,
   },
-  header: {
-    alignItems: 'center',
+  sheetHeader: {
+    marginBottom: 28,
+  },
+  handle: {
+    width: 44,
+    height: 4,
+    borderRadius: 2,
+    alignSelf: 'center',
     marginBottom: 24,
-  },
-  logo: {
-    width: 50,
-    height: 50,
-    marginBottom: 12,
-  },
-  brand: {
-    fontSize: 22,
-    fontWeight: '800',
-    letterSpacing: 6,
-    marginBottom: 16,
+    opacity: 0.6,
   },
   title: {
-    fontSize: 26,
-    fontWeight: '700',
+    fontSize: 28,
+    fontWeight: '800',
     letterSpacing: -0.5,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 15,
     lineHeight: 22,
-    textAlign: 'center',
     marginTop: 8,
-    paddingHorizontal: 12,
   },
-  card: {
-    width: '100%',
+  form: {
+    flex: 1,
   },
   footer: {
-    marginTop: 24,
+    marginTop: 20,
+    paddingTop: 8,
     alignItems: 'center',
   },
 });

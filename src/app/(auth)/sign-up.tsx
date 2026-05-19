@@ -1,5 +1,5 @@
+import { AuthPrimaryButton } from '@/components/auth/AuthPrimaryButton';
 import { AuthScreenLayout } from '@/components/auth/AuthScreenLayout';
-import { GlassButton } from '@/components/GlassButton';
 import { GlassInput } from '@/components/GlassInput';
 import { useAuth } from '@/hooks/use-auth';
 import { signUpSchema, type SignUpFormValues } from '@/lib/auth-schemas';
@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 function getAuthErrorMessage(error: unknown): string {
   if (error && typeof error === 'object' && 'message' in error) {
@@ -58,8 +58,8 @@ export default function SignUpScreen() {
 
   return (
     <AuthScreenLayout
-      title="Create account"
-      subtitle="Join Stacy with your name, email, and password"
+      title="Get Started"
+      subtitle="Create your account in less than 60 seconds."
       footer={
         <Text style={[styles.footerText, { color: theme.textMuted }]}>
           Already have an account?{' '}
@@ -78,7 +78,8 @@ export default function SignUpScreen() {
         name="fullName"
         render={({ field: { onChange, onBlur, value } }) => (
           <GlassInput
-            label="Full name"
+            variant="pill"
+            label="Your Name"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -94,7 +95,8 @@ export default function SignUpScreen() {
         name="email"
         render={({ field: { onChange, onBlur, value } }) => (
           <GlassInput
-            label="Email"
+            variant="pill"
+            label="Email Address"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -112,6 +114,7 @@ export default function SignUpScreen() {
         name="password"
         render={({ field: { onChange, onBlur, value } }) => (
           <GlassInput
+            variant="pill"
             label="Password"
             value={value}
             onChangeText={onChange}
@@ -129,7 +132,8 @@ export default function SignUpScreen() {
         name="confirmPassword"
         render={({ field: { onChange, onBlur, value } }) => (
           <GlassInput
-            label="Confirm password"
+            variant="pill"
+            label="Confirm Password"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -146,11 +150,7 @@ export default function SignUpScreen() {
       ) : null}
 
       <View style={styles.submitWrap}>
-        {isSigningUp ? (
-          <ActivityIndicator color={theme.primary} />
-        ) : (
-          <GlassButton label="Create account" onPress={onSubmit} />
-        )}
+        <AuthPrimaryButton label="Sign up" onPress={onSubmit} loading={isSigningUp} />
       </View>
     </AuthScreenLayout>
   );
@@ -163,12 +163,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   submitWrap: {
-    marginTop: 8,
-    minHeight: 52,
-    justifyContent: 'center',
+    marginTop: 4,
   },
   footerText: {
     fontSize: 15,
+    textAlign: 'center',
   },
   link: {
     fontWeight: '700',

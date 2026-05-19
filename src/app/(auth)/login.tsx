@@ -1,5 +1,5 @@
+import { AuthPrimaryButton } from '@/components/auth/AuthPrimaryButton';
 import { AuthScreenLayout } from '@/components/auth/AuthScreenLayout';
-import { GlassButton } from '@/components/GlassButton';
 import { GlassInput } from '@/components/GlassInput';
 import { useAuth } from '@/hooks/use-auth';
 import { signInSchema, type SignInFormValues } from '@/lib/auth-schemas';
@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 function getAuthErrorMessage(error: unknown): string {
   if (error && typeof error === 'object' && 'message' in error) {
@@ -48,8 +48,8 @@ export default function LoginScreen() {
 
   return (
     <AuthScreenLayout
-      title="Welcome back"
-      subtitle="Sign in to continue your Stacy experience"
+      title="Welcome Back!"
+      subtitle="Sign in to pick up right where you left off."
       footer={
         <Text style={[styles.footerText, { color: theme.textMuted }]}>
           New here?{' '}
@@ -68,7 +68,8 @@ export default function LoginScreen() {
         name="email"
         render={({ field: { onChange, onBlur, value } }) => (
           <GlassInput
-            label="Email"
+            variant="pill"
+            label="Email Address"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -86,6 +87,7 @@ export default function LoginScreen() {
         name="password"
         render={({ field: { onChange, onBlur, value } }) => (
           <GlassInput
+            variant="pill"
             label="Password"
             value={value}
             onChangeText={onChange}
@@ -107,11 +109,7 @@ export default function LoginScreen() {
       ) : null}
 
       <View style={styles.submitWrap}>
-        {isSigningIn ? (
-          <ActivityIndicator color={theme.primary} />
-        ) : (
-          <GlassButton label="Sign in" onPress={onSubmit} />
-        )}
+        <AuthPrimaryButton label="Sign in" onPress={onSubmit} loading={isSigningIn} />
       </View>
     </AuthScreenLayout>
   );
@@ -120,8 +118,8 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   forgotRow: {
     alignSelf: 'flex-end',
-    marginTop: -8,
-    marginBottom: 8,
+    marginTop: -4,
+    marginBottom: 20,
   },
   forgotText: {
     fontSize: 14,
@@ -133,12 +131,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   submitWrap: {
-    marginTop: 8,
-    minHeight: 52,
-    justifyContent: 'center',
+    marginTop: 4,
   },
   footerText: {
     fontSize: 15,
+    textAlign: 'center',
   },
   link: {
     fontWeight: '700',

@@ -13,6 +13,7 @@ interface GlassInputProps extends TextInputProps {
   label: string;
   error?: string;
   containerStyle?: ViewStyle;
+  variant?: 'default' | 'pill';
 }
 
 export const GlassInput = ({
@@ -20,16 +21,27 @@ export const GlassInput = ({
   error,
   containerStyle,
   style,
+  variant = 'default',
   ...inputProps
 }: GlassInputProps) => {
   const { theme } = useAppTheme();
+  const isPill = variant === 'pill';
 
   return (
-    <View style={[styles.wrapper, containerStyle]}>
-      <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
+    <View style={[styles.wrapper, isPill && styles.wrapperPill, containerStyle]}>
+      <Text
+        style={[
+          styles.label,
+          isPill && styles.labelPill,
+          { color: theme.textSecondary },
+        ]}
+      >
+        {label}
+      </Text>
       <View
         style={[
           styles.inputShell,
+          isPill && styles.inputShellPill,
           {
             backgroundColor: theme.inputBackground,
             borderColor: error ? theme.priority.critical : theme.glassBorder,
@@ -54,6 +66,9 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 16,
   },
+  wrapperPill: {
+    marginBottom: 18,
+  },
   label: {
     fontSize: 13,
     fontWeight: '600',
@@ -61,11 +76,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textTransform: 'uppercase',
   },
+  labelPill: {
+    fontSize: 14,
+    letterSpacing: 0,
+    textTransform: 'none',
+    marginBottom: 10,
+  },
   inputShell: {
     borderRadius: 14,
     borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 4,
+  },
+  inputShellPill: {
+    borderRadius: 999,
+    paddingHorizontal: 20,
   },
   input: {
     fontSize: 16,
