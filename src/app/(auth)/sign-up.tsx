@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { signUpSchema, type SignUpFormValues } from '@/lib/auth-schemas';
 import { useAppTheme } from '@/providers/ThemeProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as Burnt from 'burnt';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -20,7 +21,7 @@ function getAuthErrorMessage(error: unknown): string {
 export default function SignUpScreen() {
   const { theme } = useAppTheme();
   const router = useRouter();
-  const { signUp, isSigningUp } = useAuth();
+  const { signUp, signOut, isSigningUp } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -40,17 +41,22 @@ export default function SignUpScreen() {
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     try {
-      const result = await signUp({
+      await signUp({
         fullName: values.fullName,
         email: values.email,
         password: values.password,
       });
 
-      if (result.session) {
-        router.replace('/(app)');
-      } else {
-        setFormError('Check your email to confirm your account, then sign in.');
-      }
+      await signOut();
+
+      Burnt.toast({
+        title: 'Sign up successful',
+        message: 'Your account is ready. Please sign in.',
+        preset: 'done',
+        haptic: 'success',
+      });
+
+      router.replace('/login');
     } catch (e) {
       setFormError(getAuthErrorMessage(e));
     }

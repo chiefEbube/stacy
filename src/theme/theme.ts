@@ -68,7 +68,7 @@ export type AppTheme = {
 
 export const lightTheme: AppTheme = {
   background: '#F5F0FF',
-  backgroundGradient: ['#F5F0FF', '#EDE9FE', '#E9D5FF'],
+  backgroundGradient: ['#EDE9FE', '#DDD6FE', '#C4B5FD'],
   surface: 'rgba(255, 255, 255, 0.72)',
   surfaceSolid: '#FFFFFF',
   glassFill: 'rgba(255, 255, 255, 0.32)',
@@ -98,8 +98,8 @@ export const lightTheme: AppTheme = {
 };
 
 export const darkTheme: AppTheme = {
-  background: '#0A0610',
-  backgroundGradient: ['#0A0610', '#140E1F', '#1A1028'],
+  background: '#0D0D12',
+  backgroundGradient: ['#4A1570', '#1A1028', '#0D0D12'],
   surface: 'rgba(30, 20, 45, 0.75)',
   surfaceSolid: '#1E1428',
   glassFill: 'rgba(45, 32, 68, 0.38)',

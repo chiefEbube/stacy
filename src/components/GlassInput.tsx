@@ -1,6 +1,9 @@
 import { useAppTheme } from '@/providers/ThemeProvider';
-import React from 'react';
+import { SymbolView } from 'expo-symbols';
+import React, { useState } from 'react';
 import {
+  Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -22,10 +25,13 @@ export const GlassInput = ({
   containerStyle,
   style,
   variant = 'default',
+  secureTextEntry,
   ...inputProps
 }: GlassInputProps) => {
   const { theme } = useAppTheme();
   const isPill = variant === 'pill';
+  const isPasswordField = secureTextEntry === true;
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
     <View style={[styles.wrapper, isPill && styles.wrapperPill, containerStyle]}>
@@ -42,6 +48,7 @@ export const GlassInput = ({
         style={[
           styles.inputShell,
           isPill && styles.inputShellPill,
+          isPasswordField && styles.inputShellWithToggle,
           {
             backgroundColor: theme.inputBackground,
             borderColor: error ? theme.priority.critical : theme.glassBorder,
@@ -50,9 +57,34 @@ export const GlassInput = ({
       >
         <TextInput
           placeholderTextColor={theme.textMuted}
-          style={[styles.input, { color: theme.text }, style]}
+          style={[
+            styles.input,
+            isPasswordField && styles.inputWithToggle,
+            { color: theme.text },
+            style,
+          ]}
+          secureTextEntry={isPasswordField && !isPasswordVisible}
           {...inputProps}
         />
+        {isPasswordField ? (
+          <Pressable
+            onPress={() => setIsPasswordVisible((visible) => !visible)}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={isPasswordVisible ? 'Hide password' : 'Show password'}
+            style={styles.toggleButton}
+          >
+            <SymbolView
+              name={{
+                ios: isPasswordVisible ? 'eye.slash' : 'eye',
+                android: isPasswordVisible ? 'visibility_off' : 'visibility',
+                web: isPasswordVisible ? 'visibility_off' : 'visibility',
+              }}
+              size={20}
+              tintColor={theme.textMuted}
+            />
+          </Pressable>
+        ) : null}
       </View>
       {error ? (
         <Text style={[styles.error, { color: theme.priority.critical }]}>{error}</Text>
@@ -92,9 +124,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 20,
   },
+  inputShellWithToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: Platform.OS === 'ios' ? 14 : 12,
+  },
   input: {
+    flex: 1,
     fontSize: 16,
     paddingVertical: 12,
+  },
+  inputWithToggle: {
+    paddingRight: 8,
+  },
+  toggleButton: {
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   error: {
     marginTop: 6,

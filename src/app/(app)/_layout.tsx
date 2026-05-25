@@ -1,8 +1,10 @@
 import { useAuth } from '@/hooks/use-auth';
-import { Redirect, Stack } from 'expo-router';
+import { useAppTheme } from '@/providers/ThemeProvider';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { useAppTheme } from '@/providers/ThemeProvider';
+
+import { GlassTabBar } from '@/components/navigation/GlassTabBar';
 
 export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -21,8 +23,18 @@ export default function AppLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-      <Stack.Screen name="index" />
-    </Stack>
+    <Tabs
+      tabBar={(props) => <GlassTabBar {...props} />}
+      screenOptions={{
+        headerShown: false,
+        sceneStyle: { backgroundColor: 'transparent' },
+      }}
+    >
+      <Tabs.Screen name="index" options={{ title: 'Home' }} />
+      <Tabs.Screen name="tasks" options={{ title: 'Tasks' }} />
+      <Tabs.Screen name="schedule" options={{ title: 'Schedule' }} />
+      <Tabs.Screen name="insights" options={{ title: 'Insights' }} />
+      <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
+    </Tabs>
   );
 }
